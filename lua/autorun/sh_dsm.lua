@@ -13,6 +13,7 @@ end
 
 if SERVER then
   AddCSLuaFile("gui/cl_mainwindow.lua")
+  AddCSLuaFile("net/cl_sendmail.lua")
   include("config/sv_callconfig.lua")
   --include("net/sv_getserverinfo.lua")
   include("net/sv_sendmail.lua")
@@ -21,16 +22,17 @@ if SERVER then
     PrintMessage(HUD_PRINTTALK, "This server is running Dark's Server Manager v" .. DSM.Version .. ", providing:")
     PrintMessage(HUD_PRINTTALK, "!callmods - Summon mods via email if none are on to punish rulebreakers.")
   end)
-
-  hook.Add("OnPlayerChat", "Catch when someone is looking for the server list", function(ply, text, isTeamChat, isDead)
-    if (checkForChatCommand(ply, text)) then
-      return ""
-    end
-  end)
 end
 
 if CLIENT then
   include("gui/cl_mainwindow.lua")
+  include("net/cl_sendmail.lua")
   concommand.Add("dsm", function() DSM.Gui.MainWindow.drawMainWindow() end)
+  
+   hook.Add("OnPlayerChat", "Catch when someone is looking for the server list", function(ply, text, isTeamChat, isDead)
+    if (checkForChatCommand(ply, text)) then
+      return true
+    end
+  end)
 end
     

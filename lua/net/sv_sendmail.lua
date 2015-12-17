@@ -135,11 +135,6 @@ function string.IndexOf(needle, haystack)
 	return -1
 end
 
--- From http://lua-users.org/wiki/StringRecipes
-function string.starts(String,Start)
-   return string.sub(String,1,string.len(Start))==Start
-end
-
 -- Wrap a string in quotes so it can be sent to a php post.
 local function stringWrap(string)
   return "\"" .. string .. "\""
@@ -229,28 +224,16 @@ local function updateCooldowns(ply)
 end
 
 local function processModCallCommand(ply, text)
-  if (notBlacklisted(ply) && hasPermissions(ply)) then
-    if (text:len() < 11 || text[10] != " ") then
-      ply:PrintMessage(HUD_PRINTTALK, "Usage: !callmods <message>")
-    elseif (userIsNotOnCooldown(ply) && serverIsNotOnCooldown(ply)) then
-      callMods(ply, string.sub(text, 11, string.len(text)))
+  if (notBlacklisted(ply) && hasPermissions(ply) && userIsNotOnCooldown(ply) && serverIsNotOnCooldown(ply)) then
+      callMods(ply, text)
       ply:PrintMessage(HUD_PRINTTALK, "Now attempting to send an email to the mods/admins.")
       updateCooldowns(ply)
    end
-  end
 end
 
-local function checkForModCallCommand(ply, text)
-  if (text:len() < 9) then return false end
-  if (string.starts(string.lower(text), "!callmods")) then
-    processModCallCommand(ply, text)
-    return true
-  end
-  return false
-end
+util.AddNetworkString("CallMods")
+net.Receive("CallMods", function(len, ply) 
+      local message = net.ReadString() 
+      processModCallCommand(ply, message)
+    end) 
 
-hook.Add("OnPlayerChat", "Call for mods", function(ply, text, team, isDead)
-    if (checkForModCallCommand(ply, text)) then
-      return ""
-    end
-  end)
