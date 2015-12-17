@@ -163,7 +163,7 @@ local function callMods(ply, message)
     postDataTable["servername"] = stringWrap(GetHostName())
     postDataTable["message"] = stringWrap(message)
     
-    http.HTTPRequest("http://localhost/modmailer/mail.php", "POST", postDataTable, function(headers, body)
+    http.HTTPRequest(DSM.Config.CallMods.MailerUrl, "POST", postDataTable, function(headers, body)
         print("Mail sent.")
         print(headers)
         print(body)
@@ -250,5 +250,7 @@ local function checkForModCallCommand(ply, text)
 end
 
 hook.Add("PlayerSay", "Call for mods", function(ply, text, team)
-    return checkForModCallCommand(ply, text)
+    if (checkForModCallCommand(ply, text)) then
+      return ""
+    end
   end)

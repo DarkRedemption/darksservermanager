@@ -18,3 +18,6 @@ DSM.Config.CallMods.Emails = {"email@goes.here", "anotheremails@goes.here"}
 
 --List of SteamIds of people you generally like enough to keep on the server but are abusing the !callmods command.
 DSM.Config.CallMods.Blacklist = {"STEAM_0:x:xxxxxx", "STEAM_0:x:xxxxxx"}
+
+--The Url that sends the email.
+DSM.Config.CallMods.MailerUrl = "http://localhost/modmailer/mail.php"
