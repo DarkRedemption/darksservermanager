@@ -244,12 +244,12 @@ local function checkForModCallCommand(ply, text)
   if (text:len() < 9) then return false end
   if (string.starts(string.lower(text), "!callmods")) then
     processModCallCommand(ply, text)
-    return ""
+    return true
   end
-  return text
+  return false
 end
 
-hook.Add("PlayerSay", "Call for mods", function(ply, text, team)
+hook.Add("OnPlayerChat", "Call for mods", function(ply, text, team, isDead)
     if (checkForModCallCommand(ply, text)) then
       return ""
     end

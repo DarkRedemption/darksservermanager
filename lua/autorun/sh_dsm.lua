@@ -1,6 +1,6 @@
 DSM = {}
 DSM.Gui = {}
-DSM.Version = "0.1.1"
+DSM.Version = "0.1.2"
 AddCSLuaFile("gui/cl_mainwindow.lua")
 
 local function checkForChatCommand(ply, chatMessage)
@@ -17,12 +17,12 @@ if SERVER then
   --include("net/sv_getserverinfo.lua")
   include("net/sv_sendmail.lua")
   
-  timer.Create("DSMPSA", 1200, 0, function()
+  timer.Create("DSMPSA", 900, 0, function()
     PrintMessage(HUD_PRINTTALK, "This server is running Dark's Server Manager v" .. DSM.Version .. ", providing:")
     PrintMessage(HUD_PRINTTALK, "!callmods - Summon mods via email if none are on to punish rulebreakers.")
   end)
 
-  hook.Add("PlayerSay", "Catch when someone is looking for the server list", function(ply, text, isTeamChat)
+  hook.Add("OnPlayerChat", "Catch when someone is looking for the server list", function(ply, text, isTeamChat, isDead)
     if (checkForChatCommand(ply, text)) then
       return ""
     end
