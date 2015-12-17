@@ -24,6 +24,9 @@ if (is_null($config["emailaccount"])) {
 	$playername = str_replace('"', "", $_POST["playername"]);
 	$message = str_replace('"', "", $_POST["message"]);
 	$servername = str_replace('"', "", $_POST["servername"]);
+	$emailaccount = $config["emailaccount"];
+	$emailpassword = $config["emailpassword"];
+	$emailfrom = $config["emailfrom"];
 	
 	/**
 	 * This example shows settings to use when sending via Google's Gmail servers.
