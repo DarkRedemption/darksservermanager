@@ -241,7 +241,7 @@ local function processModCallCommand(ply, text)
 end
 
 local function checkForModCallCommand(ply, text)
-  if (text:len() < 9) then return text end
+  if (text:len() < 9) then return false end
   if (string.starts(string.lower(text), "!callmods")) then
     processModCallCommand(ply, text)
     return ""
