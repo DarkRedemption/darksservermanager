@@ -1,11 +1,14 @@
 <?php
 require '../PHPMailer-master/PHPMailerAutoload.php';
+$config = parse_ini_file("config/config.ini");
 
-$emailaccount = "email@address.here";
-$emailpassword = "passwordhere";
-$emailfrom = "Your server name or network or whatever goes here.";
-
-if (is_null($_POST["emails"])) {
+if (is_null($config["emailaccount"])) {
+	echo 'Error: Email account not found.';
+} else if (is_null($config["emailfrom"])) {
+	echo 'Error: Email Sender Name not found.';
+} else if (is_null($config["emailpassword"])) {
+	echo "Error: Couldn't find email password.";
+} else if (is_null($_POST["emails"])) {
 	echo 'Error: Emails not found.';
 } else if (is_null($_POST["playername"])) {
 	echo 'Error: Player name that called for mods not found.';
@@ -13,8 +16,8 @@ if (is_null($_POST["emails"])) {
 	echo 'Error: A message is required.';
 } else if (is_null($_POST["servername"])) {
 	echo 'Error: A server name is required.';
-} else if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1" && $_SERVER['REMOTE_ADDR'] != "localhost") {
-	echo 'This page can only be used by the server itself. Go away.';
+//} else if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1" && $_SERVER['REMOTE_ADDR'] != "localhost") {
+//	echo 'This page can only be used by the server itself. Go away.';
 } else {
 	echo 'Now attempting to send email from ' . $_POST["playername"] . ' to  ' . htmlspecialchars($_POST["emails"]). '!';
 	$emails = explode(",", str_replace('"', "", $_POST["emails"]));
