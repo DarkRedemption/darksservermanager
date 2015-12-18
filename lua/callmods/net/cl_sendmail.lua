@@ -18,7 +18,9 @@ end
 local function checkForModCallCommand(ply, text)
   if (text:len() < 9) then return false end
   if (string.starts(string.lower(text), "!callmods")) then
-    processModCallCommand(ply, text)
+    if (LocalPlayer() == ply) then
+      processModCallCommand(ply, text)
+    end
     return true
   end
   return false

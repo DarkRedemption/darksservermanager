@@ -17,14 +17,13 @@ local function makeServerList(panel)
   list:SetPos(25, 50)
   list:SetSize(550, 500)
   list:SetMultiSelect(false)
+  local idColumn = list:AddColumn("Id")
   local nameColumn = list:AddColumn("Server Name")
   local gameColumn = list:AddColumn("Game")
-  local mapColumn = list:AddColumn("Map")
-  local playersColumn = list:AddColumn("Players")
-  nameColumn:SetWidth(300)
+  idColumn:SetWidth(25)
+  nameColumn:SetWidth(450)
   gameColumn:SetWidth(75)
-  mapColumn:SetWidth(100)
-  playersColumn:SetWidth(75)
+  return list
 end
 
 local function makeServerDescriptionText(panel)
@@ -33,21 +32,11 @@ local function makeServerDescriptionText(panel)
   richtext:SetWidth(100)
   richtext:DockMargin(0, 22, 15, 46)
   richtext:SetSize(200, 500)
-  -- Text segment #1 (grayish color)
-  richtext:InsertColorChange(192, 192, 192, 255)
-  richtext:AppendText("This \nRichText \nis \n")
-
-  -- Text segment #2 (light yellow)
-  richtext:InsertColorChange(255, 255, 224, 255)
-  richtext:AppendText("AWESOME\n\n")
-
-  -- Text segment #3 (red ESRB notice localized string)
-  richtext:InsertColorChange(255, 64, 64, 255)
-  richtext:AppendText("#ServerBrowser_ESRBNotice")
   
   function richtext:PerformLayout()
     self:SetBGColor(Color(255, 255, 255))
   end
+  return richtext
 end
 
 local function makeConnectButton(panel)
@@ -59,13 +48,48 @@ local function makeConnectButton(panel)
   button.DoClick = function ()
    print("Unimplemented.")
   end
+  return button
+end
+
+local function getServerList(listView, serverDescriptionRichText, connectButton)
+  local serverList = {}
+  net.Start("DSM_GetServerList")
+  net.SendToServer()
+  net.Receive("DSM_GetServerList", function(len, _)
+   local count = net.ReadInt(8)
+   for i=1,count,1 do
+     local server = DSM.AffiliatedServers.ServerListing.deserialize()
+     listView:AddLine(i, server.name, server.gameType)
+     table.insert(serverList, server)
+    end
+  end
+)
+
+  listView.OnClickLine = function(parent, line, isSelected)
+    serverDescriptionRichText:SetText("")
+    if (isSelected) then
+      local id = line:GetValue(1)
+      local selectedServer = {}
+      --The fact that I can't just get something at a specific index is insane
+      for key, server in ipairs(serverList) do
+        if (key == id) then
+          selectedServer = server
+          break
+        end
+      end
+      selectedServer:renderDescription(serverDescriptionRichText)
+    end 
+  end
+  
+  return serverList
 end
 
 function MainWindow:drawMainWindow()
   local mainWindow = makeBasePanel()
-  makeServerList(mainWindow)
-  makeServerDescriptionText(mainWindow)
-  makeConnectButton(mainWindow)
+  local listView = makeServerList(mainWindow)
+  local serverDescriptionRichText = makeServerDescriptionText(mainWindow)
+  local connectButton = makeConnectButton(mainWindow)
+  getServerList(listView, serverDescriptionRichText, connectButton)
   mainWindow:MakePopup()
 end
 
