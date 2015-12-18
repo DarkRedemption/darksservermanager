@@ -4,6 +4,6 @@ local server1DescriptionArray = {}
 
 table.insert(server1DescriptionArray, server1DescriptionParagraph1)
 table.insert(server1DescriptionArray, server1DescriptionParagraph2)
-local server1 = DSM.AffiliatedServers.ServerListing:new("Local Test Server", "TTT", "127.0.0.1", 27015, server1DescriptionArray)
+local server1 = DSM.AffiliatedServers.ServerListing:new("Local Test Server", "TTT", "192.168.1.10", 27015, server1DescriptionArray)
 
 server1:addToList()

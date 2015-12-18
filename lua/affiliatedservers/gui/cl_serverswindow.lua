@@ -51,7 +51,27 @@ local function makeConnectButton(panel)
   return button
 end
 
+local function onClickLine(line, isSelected, serverList, serverDescriptionRichText, connectButton)
+   serverDescriptionRichText:SetText("")
+    if (isSelected) then
+      local id = line:GetValue(1)
+      --The fact that I can't just get something at a specific index is insane
+      for key, server in ipairs(serverList) do
+        if (key == id) then
+          server:renderDescription(serverDescriptionRichText)
+          return server
+        end
+      end
+    end
+    return nil
+end
+
+local function onClickConnectButton(selectedServer, connectButton)
+  LocalPlayer():ConCommand("connect " .. selectedServer.ip .. ":" .. tostring(selectedServer.port)) 
+end
+
 local function getServerList(listView, serverDescriptionRichText, connectButton)
+  listView:Clear()
   local serverList = {}
   net.Start("DSM_GetServerList")
   net.SendToServer()
@@ -65,20 +85,18 @@ local function getServerList(listView, serverDescriptionRichText, connectButton)
   end
 )
 
+  connectButton:SetDisabled(true)
+  
   listView.OnClickLine = function(parent, line, isSelected)
-    serverDescriptionRichText:SetText("")
-    if (isSelected) then
-      local id = line:GetValue(1)
-      local selectedServer = {}
-      --The fact that I can't just get something at a specific index is insane
-      for key, server in ipairs(serverList) do
-        if (key == id) then
-          selectedServer = server
-          break
-        end
+    local selectedServer = onClickLine(line, isSelected, serverList, serverDescriptionRichText, connectButton)
+    if (selectedServer == nil) then
+      connectButton:SetDisabled(true)
+    else
+      connectButton:SetEnabled(true)
+      function connectButton:DoClick()
+        onClickConnectButton(selectedServer, connectButton)
       end
-      selectedServer:renderDescription(serverDescriptionRichText)
-    end 
+    end
   end
   
   return serverList
