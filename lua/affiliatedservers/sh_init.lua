@@ -1,3 +1,7 @@
+DSM.AffiliatedServers = {}
+DSM.AffiliatedServers.Database = {}
+DSM.AffiliatedServers.Database.Tables = {}
+
 if SERVER then
   --Affiliated Servers
   AddCSLuaFile("gui/cl_serverswindow.lua")
@@ -7,6 +11,7 @@ if SERVER then
   include("sh_serverlisting.lua")
   include("config/sv_serverconfig.lua")
   include("gui/sv_serverswindow.lua")
+  include("database/sv_conversionstable.lua")
   --include("net/sv_getserverinfo.lua")
 end
 

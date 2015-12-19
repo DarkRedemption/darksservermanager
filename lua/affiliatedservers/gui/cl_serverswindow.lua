@@ -1,9 +1,20 @@
 local MainWindow = {}
 
+local function centerPanel(panel)
+  local screenWidth = ScrW()
+  local screenHeight = ScrH()
+  local panelWidth = panel:GetWide()
+  local panelHeight = panel:GetTall()
+  local xPosition =  (screenWidth - panelWidth) / 2
+  local yPosition = (screenHeight - panelHeight) / 2
+  panel:SetPos( xPosition, yPosition )
+end
+
 local function makeBasePanel()
   local DermaPanel = vgui.Create("DFrame") -- Creates the frame itself
-  DermaPanel:SetPos( 50,50 ) -- Position on the players screen
-  DermaPanel:SetSize(800, 600) -- Size of the frame
+   -- Position on the players screen
+  DermaPanel:SetSize(800, 300) -- Size of the frame
+  centerPanel(DermaPanel)
   DermaPanel:SetTitle("Affiliated Servers") -- Title of the frame
   DermaPanel:SetVisible(true)
   DermaPanel:SetDraggable(true) -- Draggable by mouse?
@@ -15,7 +26,7 @@ local function makeServerList(panel)
   local list = vgui.Create("DListView")
   list:SetParent(panel)
   list:SetPos(25, 50)
-  list:SetSize(550, 500)
+  list:SetSize(550, 200)
   list:SetMultiSelect(false)
   local idColumn = list:AddColumn("Id")
   local nameColumn = list:AddColumn("Server Name")
@@ -31,7 +42,7 @@ local function makeServerDescriptionText(panel)
   richtext:Dock(RIGHT)
   richtext:SetWidth(100)
   richtext:DockMargin(0, 22, 15, 46)
-  richtext:SetSize(200, 500)
+  richtext:SetSize(200, 200)
   
   function richtext:PerformLayout()
     self:SetBGColor(Color(255, 255, 255))
@@ -43,7 +54,7 @@ local function makeConnectButton(panel)
   local button = vgui.Create("DButton")
   button:SetParent(panel)
   button:SetText( "Connect to Server" )
-  button:SetPos(25, 550)
+  button:SetPos(25, 250)
   button:SetSize(150, 25)
   button.DoClick = function ()
    print("Unimplemented.")
@@ -67,7 +78,13 @@ local function onClickLine(line, isSelected, serverList, serverDescriptionRichTe
 end
 
 local function onClickConnectButton(selectedServer, connectButton)
-  LocalPlayer():ConCommand("connect " .. selectedServer.ip .. ":" .. tostring(selectedServer.port)) 
+  net.Start("DSM_ConnectToServer")
+  net.WriteString(selectedServer.name)
+  net.SendToServer()
+  --Give the net stuff a little time to send
+  timer.Simple(0.3, function()
+    LocalPlayer():ConCommand("connect " .. selectedServer.ip .. ":" .. tostring(selectedServer.port))
+    end)
 end
 
 local function getServerList(listView, serverDescriptionRichText, connectButton)
