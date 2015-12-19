@@ -2,7 +2,13 @@
 require '../PHPMailer-master/PHPMailerAutoload.php';
 $config = parse_ini_file("config/config.ini");
 
-if (is_null($config["emailaccount"])) {
+if (is_null($config["sharedsecret"])) {
+	echo "Error: A shared secret must be configured.";
+} else if (is_null($_POST["sharedsecret"])) {
+	echo "Error: Shared secret not received from client.";
+} else if ($_POST["sharedsecret"] != $config["sharedsecret"]) {
+	echo "Error: Incorrect shared secret.";
+} else if (is_null($config["emailaccount"])) {
 	echo 'Error: Email account not found.';
 } else if (is_null($config["emailfrom"])) {
 	echo 'Error: Email Sender Name not found.';
