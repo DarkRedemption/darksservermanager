@@ -1,12 +1,12 @@
 DSM = {}
+DSM.Database = {}
 DSM.Gui = {}
-DSM.AffiliatedServers = {}
-DSM.Version = "0.2.0"
+DSM.Version = "0.2.2"
 
 if SERVER then
   AddCSLuaFile("affiliatedservers/sh_init.lua")
   AddCSLuaFile("callmods/sh_init.lua")
-
+  include("shared/database/sv_table.lua")
   timer.Create("DSMPSA", 900, 0, function()
     PrintMessage(HUD_PRINTTALK, "This server is running Dark's Server Manager v" .. DSM.Version .. ", providing:")
     PrintMessage(HUD_PRINTTALK, "!callmods - Summon mods via email if none are on to punish rulebreakers.")

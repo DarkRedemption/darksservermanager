@@ -1,9 +1,20 @@
 local MainWindow = {}
 
+local function centerPanel(panel)
+  local screenWidth = ScrW()
+  local screenHeight = ScrH()
+  local panelWidth = panel:GetWide()
+  local panelHeight = panel:GetTall()
+  local xPosition =  (screenWidth - panelWidth) / 2
+  local yPosition = (screenHeight - panelHeight) / 2
+  panel:SetPos( xPosition, yPosition )
+end
+
 local function makeBasePanel()
   local DermaPanel = vgui.Create("DFrame") -- Creates the frame itself
-  DermaPanel:SetPos( 50,50 ) -- Position on the players screen
+   -- Position on the players screen
   DermaPanel:SetSize(800, 600) -- Size of the frame
+  centerPanel(DermaPanel)
   DermaPanel:SetTitle("Affiliated Servers") -- Title of the frame
   DermaPanel:SetVisible(true)
   DermaPanel:SetDraggable(true) -- Draggable by mouse?
@@ -67,6 +78,9 @@ local function onClickLine(line, isSelected, serverList, serverDescriptionRichTe
 end
 
 local function onClickConnectButton(selectedServer, connectButton)
+  net.Start("DSM_ConnectToServer")
+  net.WriteString(selectedServer.name)
+  net.SendToServer()
   LocalPlayer():ConCommand("connect " .. selectedServer.ip .. ":" .. tostring(selectedServer.port)) 
 end
 

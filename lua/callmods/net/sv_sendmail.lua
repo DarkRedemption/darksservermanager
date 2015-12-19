@@ -153,6 +153,7 @@ local function callMods(ply, message)
       end
     end
     
+    postDataTable["sharedsecret"] = DSM.Config.CallMods.SharedSecret
     postDataTable["emails"] = stringWrap(emails)
     postDataTable["playername"] = stringWrap(ply:GetName())
     postDataTable["servername"] = stringWrap(GetHostName())
@@ -236,4 +237,5 @@ net.Receive("CallMods", function(len, ply)
       local message = net.ReadString() 
       processModCallCommand(ply, message)
     end) 
+
 
