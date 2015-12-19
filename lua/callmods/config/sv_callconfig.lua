@@ -21,3 +21,6 @@ DSM.Config.CallMods.Blacklist = {"STEAM_0:x:xxxxxx", "STEAM_0:x:xxxxxx"}
 
 --The Url that sends the email.
 DSM.Config.CallMods.MailerUrl = "http://localhost/modmailer/mail.php"
+
+--Shared Secret (essentially a password) for the mail.php file.
+DSM.Config.CallMods.SharedSecret = "somehugerandompasswordthinggoeshere"
