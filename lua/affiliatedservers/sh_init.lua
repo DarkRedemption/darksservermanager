@@ -36,4 +36,11 @@ if CLIENT then
       return true
     end
   end)
+
+  DSM.Timer.CreateDelayedTimer("DSM_AffiliatedServers_PSA", 90, 900, 0, function()
+    local red = Color(255, 0, 0, 255)
+    local yellow = Color(255, 255, 0, 255)
+    chat.AddText(red, "Want the same community, but a different game format?")
+    chat.AddText(red, "Type ", yellow, "!servers ", Color(255, 0, 0, 255), "to view and connect to affiliated servers.")
+  end)
 end
