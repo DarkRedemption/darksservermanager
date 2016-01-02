@@ -10,5 +10,32 @@ function conversionsTable:addConversion(ply, serverName)
   return self:insert(query)
 end
 
+
+function conversionsTable:getAllConversions()
+  return conversionsTable:getConversionsInTimeframe(0, os.time())
+end
+
+function conversionsTable:getConversionsSince(startTime)
+  return conversionsTable:getConversionsInTimeframe(startTime, os.time())
+end
+
+function conversionsTable:getConversionsInTimeframe(startTime, endTime)
+  local query = "SELECT * FROM " .. self.tableName .. " WHERE timestamp >= " .. startTime .. " AND timestamp <= " .. endTime
+  return sql.Query(query)
+end
+
+function conversionsTable:getTotalConversions()
+  return conversionsTable:getConversionsInTimeframe(0, os.time())
+end
+
+function conversionsTable:getNumConversionsSince(startTime)
+  return conversionsTable:GetConversionsInTimeframe(startTime, os.time())
+end
+
+function conversionsTable:getNumConversionsInTimeframe(startTime, endTime)
+ local query = "SELECT COUNT(*) FROM " .. self.tableName .. " WHERE timestamp >= " .. startTime .. " AND timestamp <= " .. endTime
+ return sql.Query(query)
+end
+
 DSM.AffiliatedServers.Database.Tables.Conversions = conversionsTable
 conversionsTable:create()

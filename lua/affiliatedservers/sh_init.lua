@@ -1,6 +1,7 @@
 DSM.AffiliatedServers = {}
 DSM.AffiliatedServers.Database = {}
 DSM.AffiliatedServers.Database.Tables = {}
+DSM.AffiliatedServers.Gui = {}
 
 if SERVER then
   --Affiliated Servers
@@ -19,7 +20,7 @@ if CLIENT then
   include("sh_descriptionparagraph.lua")
   include("sh_serverlisting.lua")
   include("gui/cl_serverswindow.lua")
-  concommand.Add("dsm", function() DSM.Gui.MainWindow.drawMainWindow() end)
+  concommand.Add("dsm_servers", function() DSM.AffiliatedServers.Gui.MainWindow.drawMainWindow() end)
   
   local function checkForChatCommand(ply, chatMessage)
     if (chatMessage == "!servers") then
