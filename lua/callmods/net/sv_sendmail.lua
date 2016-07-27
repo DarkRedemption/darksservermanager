@@ -140,17 +140,71 @@ local function stringWrap(string)
   return "\"" .. string .. "\""
 end
 
+-- Parses the mod hours, converts into a more useful but less readable scheme
+local function extendTimes(str)
+    errorOutput = str
+    newString = ""
+    
+    while (str ~= "") do
+        --get the first pair of numbers
+        firstNumberIndex = string.find(str, "-") - 2
+        lastNumberIndex = string.find(str, "-") + 1
+        firstNumber = string.sub(str, firstNumberIndex, firstNumberIndex + 1)
+        lastNumber = string.sub(str, lastNumberIndex, lastNumberIndex + 1)
+        
+        for i = firstNumber, (lastNumber - 1), 1 --start number, end number, number to increment by
+        do
+            newNum = ""
+            if (i < 10) then
+                newNum = string.sub(i, 1, 1) --get rid of ending decimal
+                newString = newString .. "0" .. newNum .. "," --add number to string
+            else
+                newNum = string.sub(i, 1, 2) --get rid of ending decimal
+                newString = newString .. newNum .. "," --add number to string
+            end
+        end
+        str = string.sub(str, lastNumberIndex + 3) --cut off the pair of numbers
+    end
+    
+    return newString
+end
+
+-- Builds a list of whether or not a mod should be emailed, returns it
+local function checkModTimes(modTimes)
+
+	-- Current time and day
+    cDay = tonumber(os.date("%w", os.time())) + 1
+    cHour = os.date("%H", os.time())
+        
+    timeFlags = {}
+        
+    -- 1 if mod is on hours, 0 if mod is off hours
+    for i = 1, #modTimes, 1 do
+        if (string.find(extendTimes(modTimes[i][cDay]), cHour)) then
+            timeFlags[i] = 1
+        else 
+            timeFlags[i] = 0
+        end
+    end
+
+    return timeFlags
+end
+
 local function callMods(ply, message)
     local postDataTable = {}
     local emails = ""
     
+	emailTimeFlags = checkModTimes(DSM.Config.CallMods.Times)
+
     --Turn all the emails into a string that can be turned into an array using a comma as a delimiter.
     for key, address in ipairs(DSM.Config.CallMods.Emails) do
-      if (emails == "") then
-        emails = address
-      else
-        emails = emails .. "," .. address
-      end
+    	if (emailTimeFlags[key] > 0) then
+	      if (emails == "") then
+	        emails = address
+	      else
+	        emails = emails .. "," .. address
+	      end
+	  end
     end
     
     postDataTable["sharedsecret"] = DSM.Config.CallMods.SharedSecret
